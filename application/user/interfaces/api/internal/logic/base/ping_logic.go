@@ -1,10 +1,9 @@
 package base
 
 import (
-	"context"
-
 	"Ai-Novel/application/user/interfaces/api/internal/svc"
 	"Ai-Novel/application/user/interfaces/api/internal/types"
+	"context"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
