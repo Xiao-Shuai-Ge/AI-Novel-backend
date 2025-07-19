@@ -1,12 +1,12 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-
 	"Ai-Novel/application/user/interfaces/api/internal/config"
 	"Ai-Novel/application/user/interfaces/api/internal/handler"
 	"Ai-Novel/application/user/interfaces/api/internal/svc"
+	"Ai-Novel/common/zlog"
+	"flag"
+	"fmt"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -25,6 +25,9 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+
+	// 注册自定义日志
+	zlog.InitLogger(c.ServiceConf)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
