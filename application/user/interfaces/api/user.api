@@ -1,0 +1,20 @@
+syntax = "v1"
+
+@server (
+	group:      base
+	middleware: CorsMiddleware
+	prefix:     /v1/base
+)
+service user-api {
+	@doc "测试接口(ping)"
+	@handler Ping
+	get /ping (PingReq) returns (PingResp)
+}
+
+type (
+	PingReq  {}
+	PingResp {
+		Msg string `json:"msg"` // 响应信息
+	}
+)
+
