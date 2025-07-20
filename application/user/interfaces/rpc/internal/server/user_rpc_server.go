@@ -5,16 +5,16 @@
 package server
 
 import (
+	user2 "Ai-Novel/common/call/user"
 	"context"
 
 	"Ai-Novel/application/user/interfaces/rpc/internal/logic"
 	"Ai-Novel/application/user/interfaces/rpc/internal/svc"
-	"Ai-Novel/application/user/interfaces/rpc/user"
 )
 
 type UserRpcServer struct {
 	svcCtx *svc.ServiceContext
-	user.UnimplementedUserRpcServer
+	user2.UnimplementedUserRpcServer
 }
 
 func NewUserRpcServer(svcCtx *svc.ServiceContext) *UserRpcServer {
@@ -23,7 +23,7 @@ func NewUserRpcServer(svcCtx *svc.ServiceContext) *UserRpcServer {
 	}
 }
 
-func (s *UserRpcServer) Ping(ctx context.Context, in *user.Ping) (*user.Pong, error) {
+func (s *UserRpcServer) Ping(ctx context.Context, in *user2.Ping) (*user2.Pong, error) {
 	l := logic.NewPingLogic(ctx, s.svcCtx)
 	return l.Ping(in)
 }

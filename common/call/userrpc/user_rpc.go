@@ -5,17 +5,16 @@
 package userrpc
 
 import (
+	user2 "Ai-Novel/common/call/user"
 	"context"
-
-	"Ai-Novel/application/user/interfaces/rpc/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	Ping = user.Ping
-	Pong = user.Pong
+	Ping = user2.Ping
+	Pong = user2.Pong
 
 	UserRpc interface {
 		Ping(ctx context.Context, in *Ping, opts ...grpc.CallOption) (*Pong, error)
@@ -33,6 +32,6 @@ func NewUserRpc(cli zrpc.Client) UserRpc {
 }
 
 func (m *defaultUserRpc) Ping(ctx context.Context, in *Ping, opts ...grpc.CallOption) (*Pong, error) {
-	client := user.NewUserRpcClient(m.cli.Conn())
+	client := user2.NewUserRpcClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }

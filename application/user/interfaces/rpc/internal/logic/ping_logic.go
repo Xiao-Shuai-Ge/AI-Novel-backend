@@ -1,11 +1,10 @@
 package logic
 
 import (
+	"Ai-Novel/common/call/user"
 	"context"
 
 	"Ai-Novel/application/user/interfaces/rpc/internal/svc"
-	"Ai-Novel/application/user/interfaces/rpc/user"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

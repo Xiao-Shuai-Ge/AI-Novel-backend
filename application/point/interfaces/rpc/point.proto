@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package point;
+
+option go_package = "./point";
+
+message Ping {
+    string message = 1;
+}
+
+message Pong {
+    string message = 1;
+}
+
+service point_rpc {
+    rpc ping(Ping) returns(Pong);
+}
+
