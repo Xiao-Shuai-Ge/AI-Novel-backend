@@ -11,9 +11,26 @@ service user-api {
 	get /ping (PingReq) returns (PingResp)
 }
 
+@server (
+	group:      login
+	middleware: CorsMiddleware
+	prefix:     /v1/login
+)
+service user-api {
+	@doc "发送注册邮箱验证码"
+	@handler SendCaptcha
+	post /captcha (CaptchaReq) returns (CaptchaResp)
+}
+
 type (
 	PingReq  {}
 	PingResp {
+		Msg string `json:"msg"` // 响应信息
+	}
+	CaptchaReq {
+		Email string `json:"email"` // 接受验证码的邮箱
+	}
+	CaptchaResp {
 		Msg string `json:"msg"` // 响应信息
 	}
 )

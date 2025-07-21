@@ -3,6 +3,14 @@
 
 package types
 
+type CaptchaReq struct {
+	Email string `json:"email"` // 接受验证码的邮箱
+}
+
+type CaptchaResp struct {
+	Msg string `json:"msg"` // 响应信息
+}
+
 type PingReq struct {
 }
 

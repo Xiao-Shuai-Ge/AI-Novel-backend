@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	base "Ai-Novel/application/user/interfaces/api/internal/handler/base"
+	login "Ai-Novel/application/user/interfaces/api/internal/handler/login"
 	"Ai-Novel/application/user/interfaces/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -26,5 +27,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/v1/base"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware},
+			[]rest.Route{
+				{
+					// 发送注册邮箱验证码
+					Method:  http.MethodPost,
+					Path:    "/captcha",
+					Handler: login.SendCaptchaHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/v1/login"),
 	)
 }
