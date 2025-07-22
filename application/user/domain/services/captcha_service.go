@@ -35,7 +35,7 @@ func (s CaptchaService) SendCaptcha(email string) (err error) {
 	// 3. 生成验证码
 	captcha.SetRandCode()
 	// 4. 发送验证码
-	err = s.emailSender.Send([]string{email}, "【AI-Novel】验证码", "您的验证码为："+captcha.GetCode())
+	err = s.emailSender.Send([]string{email}, "【AI-Novel】验证码", "您的验证码为："+captcha.Code)
 	if err != nil {
 		zlog.ErrorfCtx(s.ctx, "发送邮箱失败： %s", err.Error())
 		return

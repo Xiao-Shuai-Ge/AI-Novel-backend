@@ -31,7 +31,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CorsMiddleware},
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.Limiter},
 			[]rest.Route{
 				{
 					// 发送注册邮箱验证码

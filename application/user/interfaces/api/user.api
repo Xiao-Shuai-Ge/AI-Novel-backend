@@ -13,7 +13,7 @@ service user-api {
 
 @server (
 	group:      login
-	middleware: CorsMiddleware
+	middleware: CorsMiddleware,Limiter
 	prefix:     /v1/login
 )
 service user-api {

@@ -31,6 +31,6 @@ func NewLoginRepo(ctx context.Context, db *gorm.DB, redis *redis.Client) LoginRe
 
 func (r *LoginRepo) SaveCaptcha(captcha entity.Captcha) error {
 	// 1. 存储到 redis 中
-	err := r.rdb.Set(r.ctx, fmt.Sprintf(REDIS_CAPTCHA_KEY, captcha.GetEmail()), captcha.GetCode(), CAPCHA_EXPIRE_TIME).Err()
+	err := r.rdb.Set(r.ctx, fmt.Sprintf(REDIS_CAPTCHA_KEY, captcha.Email), captcha.Code, CAPCHA_EXPIRE_TIME).Err()
 	return err
 }

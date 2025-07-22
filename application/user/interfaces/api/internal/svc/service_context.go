@@ -16,6 +16,7 @@ import (
 type ServiceContext struct {
 	Config         config.Config
 	CorsMiddleware rest.Middleware
+	Limiter        rest.Middleware
 	EmailSender    email.Sender
 	LoginApp       app.LoginApp
 	DB             *gorm.DB
@@ -33,6 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:         c,
 		CorsMiddleware: middleware.NewCorsMiddleware().Handle,
+		Limiter:        middleware.NewLimiterMiddleware().Handle,
 		EmailSender:    emailSender,
 		LoginApp:       app.NewLoginApp(rdb, emailSender),
 		DB:             db,

@@ -48,11 +48,3 @@ func (c *Captcha) SetRandCode() {
 	}
 	c.Code = code
 }
-
-func (c *Captcha) GetCode() string {
-	return c.Code
-}
-
-func (c *Captcha) GetEmail() string {
-	return c.Email
-}
