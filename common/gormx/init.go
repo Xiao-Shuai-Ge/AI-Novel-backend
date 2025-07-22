@@ -1,6 +1,7 @@
 package gormx
 
 import (
+	"Ai-Novel/common/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -67,7 +68,9 @@ func Open(cfg Config, logger gormLogger.Interface) (*gorm.DB, error) {
 	return db, err
 }
 func autoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate()
+	return db.AutoMigrate(
+		&model.User{},
+	)
 }
 func MustOpen(cfg Config, logger gormLogger.Interface) *gorm.DB {
 	db, err := Open(cfg, logger)

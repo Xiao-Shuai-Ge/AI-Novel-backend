@@ -40,11 +40,22 @@ func (c *Captcha) CheckEmail() (err error) {
 	return nil
 }
 
+func (c *Captcha) Verify(code string) (yes bool) {
+	if c.Code == code {
+		return true
+	}
+	return false
+}
+
 func (c *Captcha) SetRandCode() {
 	code := ""
 	for i := 0; i < CAPTCHA_LENGTH; i++ {
 		// 正确方法：生成单个数字字符
 		code += strconv.Itoa(rand.Intn(10))
 	}
+	c.Code = code
+}
+
+func (c *Captcha) SetCode(code string) {
 	c.Code = code
 }

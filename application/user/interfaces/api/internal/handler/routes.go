@@ -31,13 +31,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.Limiter},
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterMinute},
 			[]rest.Route{
 				{
 					// 发送注册邮箱验证码
 					Method:  http.MethodPost,
 					Path:    "/captcha",
 					Handler: login.SendCaptchaHandler(serverCtx),
+				},
+				{
+					// 注册
+					Method:  http.MethodPost,
+					Path:    "/register",
+					Handler: login.RegisterHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/v1/login"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterMinute10},
+			[]rest.Route{
+				{
+					// 登录
+					Method:  http.MethodPost,
+					Path:    "/login",
+					Handler: login.LoginHandler(serverCtx),
+				},
+				{
+					// 刷新 token
+					Method:  http.MethodPost,
+					Path:    "/refresh_token",
+					Handler: login.RefreshTokenHandler(serverCtx),
 				},
 			}...,
 		),

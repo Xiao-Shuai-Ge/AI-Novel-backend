@@ -11,15 +11,36 @@ service user-api {
 	get /ping (PingReq) returns (PingResp)
 }
 
+// 频率限制 1 次 / 分钟
 @server (
 	group:      login
-	middleware: CorsMiddleware,Limiter
+	middleware: CorsMiddleware,LimiterMinute
 	prefix:     /v1/login
 )
 service user-api {
 	@doc "发送注册邮箱验证码"
 	@handler SendCaptcha
 	post /captcha (CaptchaReq) returns (CaptchaResp)
+
+	@doc "注册"
+	@handler Register
+	post /register (RegisterReq) returns (RegisterResp)
+}
+
+// 频率限制 10 次 / 分钟
+@server (
+	group:      login
+	middleware: CorsMiddleware,LimiterMinute10
+	prefix:     /v1/login
+)
+service user-api {
+	@doc "登录"
+	@handler Login
+	post /login (LoginReq) returns (LoginResp)
+
+	@doc "刷新 token"
+	@handler RefreshToken
+	post /refresh_token (RefreshTokenReq) returns (RefreshTokenResp)
 }
 
 type (
@@ -32,6 +53,29 @@ type (
 	}
 	CaptchaResp {
 		Msg string `json:"msg"` // 响应信息
+	}
+	RegisterReq {
+		Email    string `json:"email"` // 注册邮箱
+		Password string `json:"password"` // 注册密码
+		Captcha  string `json:"captcha"` // 验证码
+	}
+	RegisterResp {
+		Atoken string `json:"atoken"` // 登录 token
+	}
+	LoginReq {
+		Email      string `json:"email"` // 登录邮箱
+		Password   string `json:"password"` // 登录密码
+		IsRemember bool   `json:"is_remember"` // 是否记住登录状态
+	}
+	LoginResp {
+		Atoken string `json:"atoken"` // 登录 token
+		Rtoken string `json:"rtoken"` // 刷新 token
+	}
+	RefreshTokenReq {
+		Rtoken string `json:"rtoken"` // 刷新 token
+	}
+	RefreshTokenResp {
+		Atoken string `json:"atoken"` // 登录 token
 	}
 )
 

@@ -48,3 +48,24 @@ func (s CaptchaService) SendCaptcha(email string) (err error) {
 	}
 	return
 }
+
+func (s CaptchaService) VerifyCaptcha(email, code string) (yes bool, err error) {
+	// 1. 从redis中获取验证码
+	r := repo.NewLoginRepo(s.ctx, nil, s.rdb)
+	captcha, err := r.GetCaptcha(email)
+	if err != nil {
+		zlog.ErrorfCtx(s.ctx, "获取验证码失败： %s", err.Error())
+		return
+	}
+	// 2. 验证验证码
+	yes = captcha.Verify(code)
+	// 3. 删除验证码
+	if yes {
+		err = r.DeleteCaptcha(email)
+	}
+	if err != nil {
+		zlog.ErrorfCtx(s.ctx, "删除验证码失败： %s", err.Error())
+	}
+	// 4. 返回结果
+	return
+}

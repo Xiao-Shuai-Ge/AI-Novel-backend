@@ -13,6 +13,7 @@ type Config struct {
 	Redis     redisx.Redis
 	LogConf   logx.LogConf
 	EmailConf Email `json:"Email"`
+	JwtSecret string
 }
 
 type Email struct {

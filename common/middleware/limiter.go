@@ -15,7 +15,7 @@ var limiters sync.Map
 
 // LimiterMiddlewareEverySecond10 每秒十次请求频率请求
 func LimiterMiddlewareEverySecond10(next http.HandlerFunc) http.HandlerFunc {
-	return LimiterMiddleware(next, rate.Every(1*time.Second)*10, 30)
+	return LimiterMiddleware(next, rate.Every(1*time.Second)*10, 3)
 }
 
 // LimiterMiddlewareEverySecond 每秒一次请求频率请求
@@ -25,7 +25,7 @@ func LimiterMiddlewareEverySecond(next http.HandlerFunc) http.HandlerFunc {
 
 // LimiterMiddlewareEveryMinute10 每分钟十次请求频率请求
 func LimiterMiddlewareEveryMinute10(next http.HandlerFunc) http.HandlerFunc {
-	return LimiterMiddleware(next, rate.Every(1*time.Minute)*10, 30)
+	return LimiterMiddleware(next, rate.Every(1*time.Minute)*10, 3)
 }
 
 // LimiterMiddlewareEveryMinute 每分钟一次请求频率请求

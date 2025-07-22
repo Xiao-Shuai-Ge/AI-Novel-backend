@@ -11,9 +11,38 @@ type CaptchaResp struct {
 	Msg string `json:"msg"` // 响应信息
 }
 
+type LoginReq struct {
+	Email      string `json:"email"`       // 登录邮箱
+	Password   string `json:"password"`    // 登录密码
+	IsRemember bool   `json:"is_remember"` // 是否记住登录状态
+}
+
+type LoginResp struct {
+	Atoken string `json:"atoken"` // 登录 token
+	Rtoken string `json:"rtoken"` // 刷新 token
+}
+
 type PingReq struct {
 }
 
 type PingResp struct {
 	Msg string `json:"msg"` // 响应信息
+}
+
+type RefreshTokenReq struct {
+	Rtoken string `json:"rtoken"` // 刷新 token
+}
+
+type RefreshTokenResp struct {
+	Atoken string `json:"atoken"` // 登录 token
+}
+
+type RegisterReq struct {
+	Email    string `json:"email"`    // 注册邮箱
+	Password string `json:"password"` // 注册密码
+	Captcha  string `json:"captcha"`  // 验证码
+}
+
+type RegisterResp struct {
+	Atoken string `json:"atoken"` // 登录 token
 }
