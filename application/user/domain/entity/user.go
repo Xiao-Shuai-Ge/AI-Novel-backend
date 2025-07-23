@@ -25,6 +25,17 @@ func NewUser(email, password string) User {
 	}
 }
 
+func NewUserByProfile(id int64, username, avatar string) User {
+	return User{
+		ID:           id,
+		Username:     username,
+		Avatar:       avatar,
+		Email:        "",
+		Password:     "",
+		HashPassword: "",
+	}
+}
+
 func (u *User) EncryptPassword() (err error) {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {

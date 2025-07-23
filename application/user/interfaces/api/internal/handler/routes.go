@@ -8,6 +8,7 @@ import (
 
 	base "Ai-Novel/application/user/interfaces/api/internal/handler/base"
 	login "Ai-Novel/application/user/interfaces/api/internal/handler/login"
+	user "Ai-Novel/application/user/interfaces/api/internal/handler/user"
 	"Ai-Novel/application/user/interfaces/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -85,5 +86,52 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/v1/login"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterSecond10},
+			[]rest.Route{
+				{
+					// 获取用户信息
+					Method:  http.MethodGet,
+					Path:    "/get-user",
+					Handler: user.GetUserHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/v1/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterSecond10},
+			[]rest.Route{
+				{
+					// 获取个人信息
+					Method:  http.MethodGet,
+					Path:    "/get-user-self",
+					Handler: user.GetUserSelfHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/v1/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterSecond},
+			[]rest.Route{
+				{
+					// 修改用户信息
+					Method:  http.MethodPost,
+					Path:    "/modify-user",
+					Handler: user.ModifyUserHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/v1/user"),
 	)
 }

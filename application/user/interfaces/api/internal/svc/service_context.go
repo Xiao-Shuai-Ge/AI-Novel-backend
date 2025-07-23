@@ -20,13 +20,16 @@ type ServiceContext struct {
 	JWT         jwtx.JWT
 	EmailSender email.Sender
 	LoginApp    app.LoginApp
-	UserRepo    *repo.UserRepo
+	UserApp     app.UserApp
+
+	UserRepo *repo.UserRepo
 
 	SnowflakeNode *snowflake.Node
 
 	// 中间件
 	CorsMiddleware  rest.Middleware
 	LimiterSecond   rest.Middleware
+	LimiterSecond10 rest.Middleware
 	LimiterMinute   rest.Middleware
 	LimiterMinute10 rest.Middleware
 }
@@ -57,11 +60,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		JWT:           jwt,
 		EmailSender:   emailSender,
 		LoginApp:      app.NewLoginApp(userRepo, emailSender, jwt, snowflakeNode),
+		UserApp:       app.NewUserApp(userRepo, snowflakeNode),
 		UserRepo:      userRepo,
 		SnowflakeNode: snowflakeNode,
 
 		CorsMiddleware:  middleware.NewCorsMiddleware().Handle,
 		LimiterSecond:   middleware.NewLimiterSecondMiddleware().Handle,
+		LimiterSecond10: middleware.NewLimiterSecond10Middleware().Handle,
 		LimiterMinute:   middleware.NewLimiterMinuteMiddleware().Handle,
 		LimiterMinute10: middleware.NewLimiterMinute10Middleware().Handle,
 	}

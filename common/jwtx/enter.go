@@ -8,6 +8,9 @@ import (
 )
 
 var (
+	USER_ID_KEY = "userid"
+	CLASS_KEY   = "class"
+
 	AUTH_ENUMS_ATOKEN = "atoken"
 	AUTH_ENUMS_RTOKEN = "rtoken"
 )
@@ -23,7 +26,7 @@ func NewJWT(secret string) JWT {
 }
 
 type TokenData struct {
-	Userid string `json:"user_id"`
+	Userid string `json:"userid"`
 	Class  string `json:"class"`
 }
 

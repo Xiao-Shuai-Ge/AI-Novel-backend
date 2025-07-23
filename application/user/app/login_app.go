@@ -30,12 +30,12 @@ func NewLoginApp(repo *repo.UserRepo, emailSender email.Sender, jwt jwtx.JWT, sn
 // SendCaptcha
 //
 //	@Description: 发送验证码
-//	@receiver app
+//	@receiver a
 //	@param email
 //	@return err
-func (app *LoginApp) SendCaptcha(ctx context.Context, email string) (err error) {
+func (a *LoginApp) SendCaptcha(ctx context.Context, email string) (err error) {
 	// 注册验证码服务
-	s := services.NewCaptchaService(ctx, app.Repo, app.EmailSender)
+	s := services.NewCaptchaService(ctx, a.Repo, a.EmailSender)
 	// 发送验证码
 	err = s.SendCaptcha(email)
 	if err != nil {
@@ -48,15 +48,15 @@ func (app *LoginApp) SendCaptcha(ctx context.Context, email string) (err error) 
 // Register
 //
 //	@Description: 注册
-//	@receiver app
+//	@receiver a
 //	@param ctx
 //	@param email
 //	@param password
 //	@param captchaCode
 //	@return err
-func (app *LoginApp) Register(ctx context.Context, email, password, captchaCode string) (token string, err error) {
+func (a *LoginApp) Register(ctx context.Context, email, password, captchaCode string) (token string, err error) {
 	// 1. 注册验证码服务
-	captchaService := services.NewCaptchaService(ctx, app.Repo, app.EmailSender)
+	captchaService := services.NewCaptchaService(ctx, a.Repo, a.EmailSender)
 	// 2. 验证验证码
 	yes, err := captchaService.VerifyCaptcha(email, captchaCode)
 	if err != nil {
@@ -69,7 +69,7 @@ func (app *LoginApp) Register(ctx context.Context, email, password, captchaCode 
 		return
 	}
 	// 4. 注册登录服务
-	loginService := services.NewLoginService(ctx, app.Repo, app.JWT, app.SnowflakeNode)
+	loginService := services.NewLoginService(ctx, a.Repo, a.JWT, a.SnowflakeNode)
 	// 5. 注册用户
 	user, err := loginService.Register(email, password)
 	if err != nil {
@@ -89,7 +89,7 @@ func (app *LoginApp) Register(ctx context.Context, email, password, captchaCode 
 // Login
 //
 //	@Description: 登录
-//	@receiver app
+//	@receiver a
 //	@param ctx
 //	@param email
 //	@param password
@@ -97,9 +97,9 @@ func (app *LoginApp) Register(ctx context.Context, email, password, captchaCode 
 //	@return atoken
 //	@return rtoken
 //	@return err
-func (app *LoginApp) Login(ctx context.Context, email, password string, isRemember bool) (atoken string, rtoken string, err error) {
+func (a *LoginApp) Login(ctx context.Context, email, password string, isRemember bool) (atoken string, rtoken string, err error) {
 	// 1. 注册登录服务
-	loginService := services.NewLoginService(ctx, app.Repo, app.JWT, app.SnowflakeNode)
+	loginService := services.NewLoginService(ctx, a.Repo, a.JWT, a.SnowflakeNode)
 	// 2. 验证密码
 	user, err := loginService.Login(email, password)
 	if errors.Is(err, codex.ACCOUNT_OR_PASSWORD_ERROR) {
@@ -130,14 +130,14 @@ func (app *LoginApp) Login(ctx context.Context, email, password string, isRememb
 // RefreshToken
 //
 //	@Description: 刷新token
-//	@receiver app
+//	@receiver a
 //	@param ctx
 //	@param rtoken
 //	@return atoken
 //	@return err
-func (app *LoginApp) RefreshToken(ctx context.Context, rtoken string) (atoken string, err error) {
+func (a *LoginApp) RefreshToken(ctx context.Context, rtoken string) (atoken string, err error) {
 	// 1. 注册登录服务
-	loginService := services.NewLoginService(ctx, app.Repo, app.JWT, app.SnowflakeNode)
+	loginService := services.NewLoginService(ctx, a.Repo, a.JWT, a.SnowflakeNode)
 	// 2. 解析 rtoken
 	userID, err := loginService.ParseRToken(rtoken)
 	if errors.Is(err, codex.RTOKEN_EXPIRED) {

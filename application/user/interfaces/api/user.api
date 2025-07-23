@@ -55,6 +55,41 @@ service user-api {
 	post /refresh-token (RefreshTokenReq) returns (RefreshTokenResp)
 }
 
+@server (
+	group:      user
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/user
+)
+service user-api {
+	@doc "获取用户信息"
+	@handler GetUser
+	get /get-user (GetUserReq) returns (GetUserResp)
+}
+
+@server (
+	group:      user
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/user
+	jwt:        Auth
+)
+service user-api {
+	@doc "获取个人信息"
+	@handler GetUserSelf
+	get /get-user-self (GetUserSelfReq) returns (GetUserSelfResp)
+}
+
+@server (
+	group:      user
+	middleware: CorsMiddleware,LimiterSecond
+	prefix:     /v1/user
+	jwt:        Auth
+)
+service user-api {
+	@doc "修改用户信息"
+	@handler ModifyUser
+	post /modify-user (ModifyUserReq) returns (ModifyUserResp)
+}
+
 type (
 	PingJWTReq  {}
 	PingJWTResp {
@@ -92,6 +127,28 @@ type (
 	}
 	RefreshTokenResp {
 		Atoken string `json:"atoken"` // 登录 token
+	}
+	GetUserReq {
+		Id string `form:"id"` // 用户 id
+	}
+	GetUserResp {
+		Id       int64  `json:"id,string"` // 用户 id
+		Username string `json:"username"` // 用户昵称
+		Avatar   string `json:"avatar"` // 用户头像
+	}
+	GetUserSelfReq  {}
+	GetUserSelfResp {
+		Id       int64  `json:"id,string"` // 用户 id
+		Username string `json:"username"` // 用户昵称
+		Avatar   string `json:"avatar"` // 用户头像
+	}
+	ModifyUserReq {
+		Id       string `json:"id"` // 用户 id
+		Username string `json:"username"` // 用户昵称
+		Avatar   string `json:"avatar"` // 用户头像
+	}
+	ModifyUserResp {
+		Msg string `json:"msg"` // 响应信息
 	}
 )
 
