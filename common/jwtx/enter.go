@@ -1,6 +1,7 @@
 package jwtx
 
 import (
+	"Ai-Novel/common/codex"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
@@ -59,7 +60,7 @@ func (j JWT) IdentifyToken(tokenString string) (TokenData, error) {
 	if ok && token.Valid {
 		// 验证token是否过期
 		if time.Now().Unix() > int64(claims["exp"].(float64)) {
-			return TokenData{}, fmt.Errorf("token已过期")
+			return TokenData{}, codex.RTOKEN_EXPIRED
 		}
 	} else {
 		// 解析失败

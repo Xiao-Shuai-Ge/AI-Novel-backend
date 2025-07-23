@@ -2,13 +2,25 @@ syntax = "v1"
 
 @server (
 	group:      base
-	middleware: CorsMiddleware
+	middleware: CorsMiddleware,LimiterSecond
 	prefix:     /v1/base
 )
 service user-api {
 	@doc "测试接口(ping)"
 	@handler Ping
 	get /ping (PingReq) returns (PingResp)
+}
+
+@server (
+	group:      base
+	middleware: CorsMiddleware,LimiterSecond
+	prefix:     /v1/base
+	jwt:        Auth
+)
+service user-api {
+	@doc "JWT测试接口(ping)"
+	@handler PingJWT
+	get /ping-jwt (PingJWTReq) returns (PingJWTResp)
 }
 
 // 频率限制 1 次 / 分钟
@@ -40,10 +52,14 @@ service user-api {
 
 	@doc "刷新 token"
 	@handler RefreshToken
-	post /refresh_token (RefreshTokenReq) returns (RefreshTokenResp)
+	post /refresh-token (RefreshTokenReq) returns (RefreshTokenResp)
 }
 
 type (
+	PingJWTReq  {}
+	PingJWTResp {
+		Msg string `json:"msg"` // 响应信息
+	}
 	PingReq  {}
 	PingResp {
 		Msg string `json:"msg"` // 响应信息

@@ -14,6 +14,10 @@ type Config struct {
 	LogConf   logx.LogConf
 	EmailConf Email `json:"Email"`
 	JwtSecret string
+	Auth      struct { // jwt auth
+		AccessSecret string
+		AccessExpire int64
+	}
 }
 
 type Email struct {

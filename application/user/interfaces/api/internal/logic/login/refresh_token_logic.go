@@ -25,7 +25,13 @@ func NewRefreshTokenLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Refr
 }
 
 func (l *RefreshTokenLogic) RefreshToken(req *types.RefreshTokenReq) (resp *types.RefreshTokenResp, err error) {
-	// todo: add your logic here and delete this line
-
+	// 调用登录服务
+	atoken, err := l.svcCtx.LoginApp.RefreshToken(l.ctx, req.Rtoken)
+	if err != nil {
+		return nil, err
+	}
+	resp = &types.RefreshTokenResp{
+		Atoken: atoken,
+	}
 	return
 }

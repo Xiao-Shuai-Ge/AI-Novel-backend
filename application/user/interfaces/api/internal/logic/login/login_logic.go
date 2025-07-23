@@ -25,7 +25,14 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err error) {
-	// todo: add your logic here and delete this line
-
+	// 调用登录服务
+	atoken, rtoken, err := l.svcCtx.LoginApp.Login(l.ctx, req.Email, req.Password, req.IsRemember)
+	if err != nil {
+		return nil, err
+	}
+	resp = &types.LoginResp{
+		Atoken: atoken,
+		Rtoken: rtoken,
+	}
 	return
 }

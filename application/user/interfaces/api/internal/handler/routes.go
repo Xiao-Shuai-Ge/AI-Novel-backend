@@ -16,7 +16,7 @@ import (
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.CorsMiddleware},
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterSecond},
 			[]rest.Route{
 				{
 					// 测试接口(ping)
@@ -26,6 +26,22 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
+		rest.WithPrefix("/v1/base"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.CorsMiddleware, serverCtx.LimiterSecond},
+			[]rest.Route{
+				{
+					// JWT测试接口(ping)
+					Method:  http.MethodGet,
+					Path:    "/ping-jwt",
+					Handler: base.PingJWTHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/v1/base"),
 	)
 
@@ -63,7 +79,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					// 刷新 token
 					Method:  http.MethodPost,
-					Path:    "/refresh_token",
+					Path:    "/refresh-token",
 					Handler: login.RefreshTokenHandler(serverCtx),
 				},
 			}...,

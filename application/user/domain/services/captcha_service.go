@@ -6,19 +6,18 @@ import (
 	"Ai-Novel/common/email"
 	"Ai-Novel/common/zlog"
 	"context"
-	"github.com/redis/go-redis/v9"
 )
 
 type CaptchaService struct {
 	ctx         context.Context
-	rdb         *redis.Client
+	Repo        *repo.UserRepo
 	emailSender email.Sender
 }
 
-func NewCaptchaService(ctx context.Context, rdb *redis.Client, emailSender email.Sender) CaptchaService {
+func NewCaptchaService(ctx context.Context, repo *repo.UserRepo, emailSender email.Sender) CaptchaService {
 	return CaptchaService{
 		ctx:         ctx,
-		rdb:         rdb,
+		Repo:        repo,
 		emailSender: emailSender,
 	}
 }
@@ -41,8 +40,7 @@ func (s CaptchaService) SendCaptcha(email string) (err error) {
 		return
 	}
 	// 5. 保存验证码到redis
-	r := repo.NewLoginRepo(s.ctx, nil, s.rdb)
-	err = r.SaveCaptcha(captcha)
+	err = s.Repo.SaveCaptcha(s.ctx, captcha)
 	if err != nil {
 		zlog.ErrorfCtx(s.ctx, "保存验证码到redis失败： %s", err.Error())
 	}
@@ -51,8 +49,7 @@ func (s CaptchaService) SendCaptcha(email string) (err error) {
 
 func (s CaptchaService) VerifyCaptcha(email, code string) (yes bool, err error) {
 	// 1. 从redis中获取验证码
-	r := repo.NewLoginRepo(s.ctx, nil, s.rdb)
-	captcha, err := r.GetCaptcha(email)
+	captcha, err := s.Repo.GetCaptcha(s.ctx, email)
 	if err != nil {
 		zlog.ErrorfCtx(s.ctx, "获取验证码失败： %s", err.Error())
 		return
@@ -61,10 +58,11 @@ func (s CaptchaService) VerifyCaptcha(email, code string) (yes bool, err error) 
 	yes = captcha.Verify(code)
 	// 3. 删除验证码
 	if yes {
-		err = r.DeleteCaptcha(email)
+		err = s.Repo.DeleteCaptcha(s.ctx, email)
 	}
 	if err != nil {
 		zlog.ErrorfCtx(s.ctx, "删除验证码失败： %s", err.Error())
+		return
 	}
 	// 4. 返回结果
 	return

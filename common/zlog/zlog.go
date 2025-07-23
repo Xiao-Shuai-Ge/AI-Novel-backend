@@ -177,6 +177,7 @@ func Errorf(format string, v ...interface{}) {
 	_logger := getLogger()
 	_logger, textCaller := addCaller(&_logger)
 	_logger.Error(fmt.Sprintf(textCaller+newLine+format, v...))
+	//return errors.New(fmt.Sprintf(format, v...))
 }
 
 func Warnf(format string, v ...interface{}) {

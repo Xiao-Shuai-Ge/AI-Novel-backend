@@ -22,6 +22,13 @@ type LoginResp struct {
 	Rtoken string `json:"rtoken"` // 刷新 token
 }
 
+type PingJWTReq struct {
+}
+
+type PingJWTResp struct {
+	Msg string `json:"msg"` // 响应信息
+}
+
 type PingReq struct {
 }
 
