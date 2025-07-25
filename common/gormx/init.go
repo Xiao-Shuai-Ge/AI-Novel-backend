@@ -70,6 +70,9 @@ func Open(cfg Config, logger gormLogger.Interface) (*gorm.DB, error) {
 func autoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&model.User{},
+		&model.Novel{},
+		&model.Chapter{},
+		&model.Character{},
 	)
 }
 func MustOpen(cfg Config, logger gormLogger.Interface) *gorm.DB {

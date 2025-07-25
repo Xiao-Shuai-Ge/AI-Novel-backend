@@ -1,10 +1,10 @@
 package svc
 
 import (
-	"Ai-Novel/application/user/app"
-	"Ai-Novel/application/user/infrastructure/repo"
-	"Ai-Novel/application/user/interfaces/api/internal/config"
-	"Ai-Novel/application/user/interfaces/api/internal/middleware"
+	"Ai-Novel/application/novel/app"
+	"Ai-Novel/application/novel/infrastructure/repo"
+	"Ai-Novel/application/novel/interfaces/api/internal/config"
+	"Ai-Novel/application/novel/interfaces/api/internal/middleware"
 	"Ai-Novel/common/email"
 	"Ai-Novel/common/gormx"
 	"Ai-Novel/common/jwtx"
@@ -19,10 +19,9 @@ type ServiceContext struct {
 	Config      config.Config
 	JWT         jwtx.JWT
 	EmailSender email.Sender
-	LoginApp    app.LoginApp
-	UserApp     app.UserApp
+	NovelApp    app.NovelApp
 
-	UserRepo *repo.UserRepo
+	NovelRepo *repo.NovelRepo
 
 	SnowflakeNode *snowflake.Node
 
@@ -39,7 +38,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	db := gormx.MustOpen(c.Mysql, dbLogger.New())
 	rdb := redisx.MustOpen(c.Redis)
 
-	userRepo := repo.NewUserRepo(db, rdb)
+	novelRepo := repo.NewNovelRepo(db, rdb)
 
 	// 初始化ID生成器
 	// 目前先用时间戳作为唯一ID，后续保证集群唯一性
@@ -49,25 +48,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		panic(err)
 	}
 
-	// jwt
-	jwt := jwtx.NewJWT(c.JwtSecret)
-
-	// 初始化邮件发送器
-	emailSender := email.NewEmailSender(c.EmailConf.Host, c.EmailConf.Port, c.EmailConf.Username, c.EmailConf.Password)
-
 	return &ServiceContext{
 		Config:        c,
-		JWT:           jwt,
-		EmailSender:   emailSender,
-		LoginApp:      app.NewLoginApp(userRepo, emailSender, jwt, snowflakeNode),
-		UserApp:       app.NewUserApp(userRepo, snowflakeNode),
-		UserRepo:      userRepo,
+		NovelApp:      app.NewNovelApp(novelRepo, snowflakeNode),
+		NovelRepo:     novelRepo,
 		SnowflakeNode: snowflakeNode,
 
 		CorsMiddleware:  middleware.NewCorsMiddleware().Handle,
-		LimiterSecond:   middleware.NewLimiterSecondMiddleware().Handle,
 		LimiterSecond10: middleware.NewLimiterSecond10Middleware().Handle,
-		LimiterMinute:   middleware.NewLimiterMinuteMiddleware().Handle,
 		LimiterMinute10: middleware.NewLimiterMinute10Middleware().Handle,
 	}
 }

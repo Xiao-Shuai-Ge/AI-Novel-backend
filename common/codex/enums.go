@@ -1,0 +1,11 @@
+package codex
+
+const (
+	NOVEL_STATUS_COUNT = 2
+
+	NOVEL_STATUS_UPDATING = 0
+	NOVEL_STATUS_FINISHED = 1
+
+	// 未登录用户ID
+	UNLOGIN_USER_ID = int64(0)
+)

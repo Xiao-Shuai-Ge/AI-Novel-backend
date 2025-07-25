@@ -1,0 +1,288 @@
+syntax = "v1"
+
+@server (
+	group:      novel
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+)
+service novel-api {
+	@doc "获取小说信息(游客)"
+	@handler GetNovelGuest
+	get /get-novel-guest (GetNovelReq) returns (GetNovelResp)
+}
+
+@server (
+	group:      chapter
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+)
+service novel-api {
+	@doc "获取篇章(游客)"
+	@handler GetChapterGuest
+	get /get-chapter-guest (GetChapterReq) returns (GetChapterResp)
+
+	@doc "获取小说篇章列表(游客)"
+	@handler GetChapterListGuset
+	get /get-chapter-list-guest (GetChapterListReq) returns (GetChapterListResp)
+}
+
+@server (
+	group:      character
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+)
+service novel-api {
+	@doc "获取小说角色信息(游客)"
+	@handler GetCharacterGuest
+	get /get-character-guest (GetCharacterReq) returns (GetCharacterResp)
+
+	@doc "获取小说角色列表(游客)"
+	@handler GetCharacterListGuest
+	get /get-character-list-guest (GetCharacterListReq) returns (GetCharacterListResp)
+}
+
+@server (
+	group:      novel
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "获取小说信息"
+	@handler GetNovel
+	get /get-novel (GetNovelReq) returns (GetNovelResp)
+}
+
+@server (
+	group:      chapter
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "获取篇章"
+	@handler GetChapter
+	get /get-chapter (GetChapterReq) returns (GetChapterResp)
+
+	@doc "获取小说篇章列表"
+	@handler GetChapterList
+	get /get-chapter-list (GetChapterListReq) returns (GetChapterListResp)
+}
+
+@server (
+	group:      character
+	middleware: CorsMiddleware,LimiterSecond10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "获取小说角色信息"
+	@handler GetCharacter
+	get /get-character (GetCharacterReq) returns (GetCharacterResp)
+
+	@doc "获取小说角色列表"
+	@handler GetCharacterList
+	get /get-character-list (GetCharacterListReq) returns (GetCharacterListResp)
+}
+
+@server (
+	group:      novel
+	middleware: CorsMiddleware,LimiterMinute10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "增加小说"
+	@handler CreateNovel
+	post /create-novel (CreateNovelReq) returns (CreateNovelResp)
+
+	@doc "修改小说"
+	@handler UpdateNovel
+	post /update-novel (UpdateNovelReq) returns (UpdateNovelResp)
+
+	@doc "删除小说"
+	@handler DeleteNovel
+	post /delete-novel (DeleteNovelReq) returns (DeleteNovelResp)
+}
+
+@server (
+	group:      chapter
+	middleware: CorsMiddleware,LimiterMinute10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "添加篇章"
+	@handler CreateChapter
+	post /create-chapter (CreateChapterReq) returns (CreateChapterResp)
+
+	@doc "修改篇章"
+	@handler UpdateChapter
+	post /update-chapter (UpdateChapterReq) returns (UpdateChapterResp)
+
+	@doc "删除篇章"
+	@handler DeleteChapter
+	post /delete-chapter (DeleteChapterReq) returns (DeleteChapterResp)
+}
+
+@server (
+	group:      character
+	middleware: CorsMiddleware,LimiterMinute10
+	prefix:     /v1/novel
+	jwt:        Auth
+)
+service novel-api {
+	@doc "添加角色"
+	@handler CreateCharacter
+	post /create-character (CreateCharacterReq) returns (CreateCharacterResp)
+
+	@doc "修改角色"
+	@handler UpdateCharacter
+	post /update-character (UpdateCharacterReq) returns (UpdateCharacterResp)
+
+	@doc "删除角色"
+	@handler DeleteCharacter
+	post /delete-character (DeleteCharacterReq) returns (DeleteCharacterResp)
+}
+
+type (
+	Novel {
+		ID       int64  `json:"id,string"` // 小说id
+		Title    string `json:"title"` // 小说标题
+		Avatar   string `json:"avatar"` // 小说封面
+		AuthorID int64  `json:"author_id,string"` // 作者id
+		Summary  string `json:"summary"` // 小说简介
+		Status   int    `json:"status"` // 小说状态
+		IsPublic bool   `json:"is_public"` // 是否公开
+	}
+	GetNovelReq {
+		ID string `form:"id"` // 小说id
+	}
+	GetNovelResp {
+		Novel Novel `json:"novel"` // 小说信息
+	}
+	CreateNovelReq {
+		Title    string `json:"title"` // 小说标题
+		Avatar   string `json:"avatar"` // 小说封面
+		Summary  string `json:"summary"` // 小说简介
+		Status   int    `json:"status"` // 小说状态
+		IsPublic bool   `json:"is_public"` // 是否公开
+	}
+	CreateNovelResp {
+		ID int64 `json:"id,string"` // 小说id
+	}
+	UpdateNovelReq {
+		ID       string `json:"id"` // 小说id
+		Title    string `json:"title"` // 小说标题
+		Avatar   string `json:"avatar"` // 小说封面
+		Summary  string `json:"summary"` // 小说简介
+		Status   int    `json:"status"` // 小说状态
+		IsPublic bool   `json:"is_public"` // 是否公开
+	}
+	UpdateNovelResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	DeleteNovelReq {
+		ID string `json:"id"` // 小说id
+	}
+	DeleteNovelResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	Chapter {
+		ID      int64  `json:"id,string"` // 章节id
+		NovelID int64  `json:"novel_id,string"` // 小说id
+		Title   string `json:"title"` // 章节标题
+		Content string `json:"content"` // 章节内容
+		Summary string `json:"summary"` // 章节简介
+	}
+	ChapterLite {
+		ID      int64  `json:"id,string"` // 章节id
+		NovelID int64  `json:"novel_id,string"` // 小说id
+		Title   string `json:"title"` // 章节标题
+	}
+	GetChapterReq {
+		ID string `form:"id"` // 章节id
+	}
+	GetChapterResp {
+		Chapter Chapter `json:"chapter"` // 章节信息
+	}
+	CreateChapterReq {
+		NovelID string `json:"novel_id"` // 小说id
+		Title   string `json:"title"` // 章节标题
+		Content string `json:"content"` // 章节内容
+		Summary string `json:"summary"` // 章节简介
+	}
+	CreateChapterResp {
+		ID int64 `json:"id,string"` // 章节id
+	}
+	UpdateChapterReq {
+		ID      string `json:"id"` // 章节id
+		Title   string `json:"title"` // 章节标题
+		Content string `json:"content"` // 章节内容
+		Summary string `json:"summary"` // 章节简介
+	}
+	UpdateChapterResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	DeleteChapterReq {
+		ID string `json:"id"` // 章节id
+	}
+	DeleteChapterResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	GetChapterListReq {
+		NovelID string `form:"novel_id"` // 小说id
+	}
+	GetChapterListResp {
+		List []ChapterLite `json:"list"` // 章节列表
+	}
+	Character {
+		ID      int64  `json:"id,string"` // 角色id
+		NovelID int64  `json:"novel_id,string"` // 小说id
+		Name    string `json:"name"` // 角色名称
+		Avatar  string `json:"avatar"` // 角色头像
+		Summary string `json:"summary"` // 角色简介
+	}
+	CharacterLite {
+		ID      int64  `json:"id,string"` // 角色id
+		NovelID int64  `json:"novel_id,string"` // 小说id
+		Name    string `json:"name"` // 角色名称
+	}
+	GetCharacterReq {
+		ID string `form:"id"` // 角色id
+	}
+	GetCharacterResp {
+		Character Character `json:"character"` // 角色信息
+	}
+	CreateCharacterReq {
+		NovelID string `json:"novel_id"` // 小说id
+		Name    string `json:"name"` // 角色名称
+		Avatar  string `json:"avatar"` // 角色头像
+		Summary string `json:"summary"` // 角色简介
+	}
+	CreateCharacterResp {
+		ID int64 `json:"id,string"` // 角色id
+	}
+	UpdateCharacterReq {
+		ID      string `json:"id"` // 角色id
+		Name    string `json:"name"` // 角色名称
+		Avatar  string `json:"avatar"` // 角色头像
+		Summary string `json:"summary"` // 角色简介
+	}
+	UpdateCharacterResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	DeleteCharacterReq {
+		ID string `json:"id"` // 角色id
+	}
+	DeleteCharacterResp {
+		Msg string `json:"msg"` // 成功或失败信息
+	}
+	GetCharacterListReq {
+		NovelID string `form:"novel_id"` // 小说id
+	}
+	GetCharacterListResp {
+		List []CharacterLite `json:"list"` // 角色列表
+	}
+)
+
