@@ -1,20 +1,21 @@
 package main
 
 import (
+	"Ai-Novel/common/websocketx"
 	"Ai-Novel/common/zlog"
 	"flag"
 	"fmt"
 	"net/http"
 
-	"Ai-Novel/application/novel/interfaces/api/internal/config"
-	"Ai-Novel/application/novel/interfaces/api/internal/handler"
-	"Ai-Novel/application/novel/interfaces/api/internal/svc"
+	"Ai-Novel/application/ai/interfaces/api/internal/config"
+	"Ai-Novel/application/ai/interfaces/api/internal/handler"
+	"Ai-Novel/application/ai/interfaces/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/novel-api.yaml", "the config file")
+var configFile = flag.String("f", "etc/ai-api.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -31,6 +32,10 @@ func main() {
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 	}, "*"))
 	defer server.Stop()
+
+	// 启动 websocket 服务
+	websocketx.WebsocketManager = websocketx.NewClientManager()
+	go websocketx.WebsocketManager.Start()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)

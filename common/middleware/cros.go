@@ -1,14 +1,25 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 )
 
 // CorsMiddleware 跨域中间件
 func CorsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("test")
+
 		// 设置允许的源
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		// 改为动态匹配请求源
+		origin := r.Header.Get("Origin")
+		if origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		} else {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
+		//w.Header().Set("Access-Control-Allow-Origin", "*")
+
 		// 设置允许的请求头类型
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		// 设置允许的请求方法

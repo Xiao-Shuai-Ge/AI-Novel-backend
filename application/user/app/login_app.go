@@ -103,7 +103,7 @@ func (a *LoginApp) Login(ctx context.Context, email, password string, isRemember
 	// 2. 验证密码
 	user, err := loginService.Login(email, password)
 	if errors.Is(err, codex.ACCOUNT_OR_PASSWORD_ERROR) {
-		err = errors.New("密码或密码错误")
+		err = codex.ACCOUNT_OR_PASSWORD_ERROR
 		return
 	} else if err != nil {
 		err = errors.New("内部错误")

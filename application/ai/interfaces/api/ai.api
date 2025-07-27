@@ -1,0 +1,38 @@
+syntax = "v1"
+
+@server (
+	group:      ai
+	middleware: LimiterMinute10
+	prefix:     /v1/ai
+)
+service ai-api {
+	@doc "websocket接口"
+	@handler Websocket
+	get /ws (WebsocketReq) returns (WebsocketResp)
+}
+
+@server (
+	group:      ai
+	middleware: LimiterMinute
+	prefix:     /v1/ai
+)
+service ai-api {
+	@doc "生成小说篇章总结"
+	@handler ChapterSummary
+	post /chapter-summary (ChapterSummaryReq) returns (ChapterSummaryResp)
+}
+
+type (
+	WebsocketReq {
+		Token string `form:"token"` // 用户token
+	}
+	WebsocketResp  {}
+	ChapterSummaryReq {
+		Title   string `json:"title"` // 篇章标题
+		Content string `json:"content"` // 篇章文本
+	}
+	ChapterSummaryResp {
+		Summary string `json:"summary"` // 篇章总结
+	}
+)
+
